@@ -26,6 +26,8 @@ class DevQuest extends StatelessWidget {
         '/logged_in': (context) => const LoggedInScreen(),
         '/academy': (context) => const AcademyScreen(),
       },
+
+      //test
     );
   }
 }
