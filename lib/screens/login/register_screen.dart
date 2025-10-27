@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../services/auth_service.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -8,43 +10,50 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final auth = AuthService();
+  String error = '';
 
-  void _register() {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    if (email.isNotEmpty && password.isNotEmpty) {
-      Navigator.pushReplacementNamed(context, '/logged_in');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Заповни всі поля')),
+  void _register() async {
+    final success = await auth.register(
+      emailController.text,
+      passwordController.text,
+    );
+    if (success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
+    } else {
+      setState(() => error = 'Користувач уже існує');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Реєстрація')),
+      appBar: AppBar(title: const Text('Реєстрація'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _emailController,
+              controller: emailController,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
-            const SizedBox(height: 12),
             TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Пароль'),
+              controller: passwordController,
               obscureText: true,
+              decoration: const InputDecoration(labelText: 'Пароль'),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             ElevatedButton(onPressed: _register, child: const Text('Зареєструватися')),
+            if (error.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(error, style: const TextStyle(color: Colors.red)),
+            ],
           ],
         ),
       ),
