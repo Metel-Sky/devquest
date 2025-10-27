@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
-import 'login_screen.dart';
+import 'logged_in_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,10 +20,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       emailController.text,
       passwordController.text,
     );
+
     if (success) {
+      // Автоматично залогінити та перейти у гру
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoggedInScreen()),
       );
     } else {
       setState(() => error = 'Користувач уже існує');
@@ -49,7 +51,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: const InputDecoration(labelText: 'Пароль'),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: _register, child: const Text('Зареєструватися')),
+            ElevatedButton(
+              onPressed: _register,
+              child: const Text('Зареєструватися'),
+            ),
             if (error.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(error, style: const TextStyle(color: Colors.red)),
